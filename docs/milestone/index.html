@@ -1,0 +1,162 @@
+<html>
+	<title>Milestone</title>
+	<head>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<style>
+			h1 {
+				text-align: center;
+			}
+
+			.container {
+				margin: 0 auto;
+				padding: 60px 20%;
+			}
+
+			figure {
+				text-align: center;
+			}
+
+			img {
+				display: inline-block;
+			}
+
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+		<h1>Lightning Variety Simulation Project</h1>
+		<div style="text-align: center;">Names: Jennifer Cao, Sonia Chacon, Claire Ding, James Ni</div>
+
+		<br>
+
+		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/">https://arumilla.github.io/finalprojectwebpage/</a>
+		
+		<br>
+
+		Link to GitHub repository: <a href="https://arumilla.github.io/finalprojectwebpage/">https://arumilla.github.io/finalprojectwebpage/</a>
+
+        <br>
+
+		<h2>Accomplishments</h2>
+		&emsp; 
+		After reading through several papers, we realized that it will be difficult and resource intensive to accomplish our previous goal of writing a physically based simulation so we’ve shifted focus on just providing a variety of ways of finding paths for real time lightning. Furthermore, we wanted to add more interactivity to the simulation so we decided to go with using project 4 as a baseline to work off of instead of blender.
+        <br>
+        <br>
+        &emsp; We divided up the work to focus on two parts, implementing the lightning paths algorithms and working with the homework 4 skeleton to create a platform to display our results on.
+
+		<h3>Lightning path simulation</h3>
+		<p>
+			<!-- &emsp; 
+			3D lightning effects are typically non-physically grounded, and focus on only creating a visually believable replica of lightning for special effects. Our main focus will be implementing the algorithm for the path the lightning takes using energy minimization principles from physics. To make the simulation of particles computationally efficient, we will use Monte-Carlo sampling at each step. 		
+            <br> -->
+
+            <h4>Sonia</h4>
+
+            <h4>James</h4>
+			<!-- There are two main challenges:	
+			<ol>
+				<li>
+					implementing a modern, realistic model for generating the successive fractal paths which characterize lightning
+				</li>
+				<li>
+					modeling the luminance of the ionized particles based on thermodynamics
+				</li>
+			</ol> -->
+        </p>
+		
+		<h3>Simulation platform</h3>
+		<p>
+			<!-- &emsp;
+			Our baseline plan is to replicate the implementation and result of Physically Based Animation and Rendering of Lightning by T. Kim and M. Lin which presented a physically based algorithm for the simulation, animation, and rendering of sustained electric arcs. 
+			<br> -->
+
+            <h4>Claire</h4>
+
+            <h4>Shaders</h4>
+            <p>
+                &emsp;For rendering the lightning to look like a light source, we decided on using shaders to create a bloom effect since it will no longer be physically based. 
+                <br>
+                &emsp;In order to create the bloom effect, we decided to follow OpenGL’s guide on creating the bloom effect using a high pass shader(to isolate the light emitting bodies), a gaussian blur shader(to create the light emitting effect) and a compositing shader that combines the base image of the scene with the blurred scene to create the final bloom effect. 
+                <br>
+                <br>
+                &emsp;Currently, we have completed the high pass shader and the gaussian blur shader but in order to create the final image, we will need to modify the rendering pipeline in homework 4 to support running multiple shaders. 
+                <br>
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+                      <tr>
+                        <td style="text-align: center;">
+                          <img src="./images/highpass.png" width="90%"/>
+                          <figcaption>A picture rendered with a high-pass shader</figcaption>
+                        </td>
+                        <td style="text-align: center;">
+                          <img src="./images/gaussblur.png" width="95%"/>
+                          <figcaption>A picture rentered with a Gaussian blur shader</figcaption>
+                        </td>
+                      </tr>
+                    </table>
+                </div>
+            </p>
+			<!-- However, we hope to extend this work as follows:
+			<ul>
+				<li>
+					modeling physical effects specific to a Monte Carlo raytracer, which previous works do not originally use
+				</li>
+				<li>
+					temporal simulation (ignoring or approximating relativistic effects)
+				</li>
+				<li>
+					comparisons with more modern models for how lightning behaves, as the phenomenon is still poorly understood
+				</li>
+			</ul> -->
+		</p>
+		<h2>Schedule</h2>
+
+        &emsp; Due to the changes in goals, we have fallen behind our original plan but we have also updated our plan to account for these changes.
+
+		<h3>Week 2(4/13 - 4/19)</h3>
+		<p>
+            <ul>
+				<li>
+                    smth about paths
+				</li>
+                <li>
+                    smth about paths
+				</li>
+				<li>
+					claire
+				</li>
+				<li>
+					Shaders: work on the rendering pipeline
+				</li>
+			</ul>
+		
+		</p>
+
+		<h3>Week 3 (4/20 - 4/26)</h3>
+		<p>
+			<ul>
+				<li>
+                    smth about paths
+				</li>
+                <li>
+                    smth about paths
+				</li>
+				<li>
+					claire
+				</li>
+				<li>
+					Shaders: continue work on the rendering pipeline and integrate with updated simulation platform
+				</li>
+			</ul>
+        </p>
+
+		<h3>Week 4 (4/27 - 5/3)</h3>
+		<p>
+			TODO
+        </p>
+    </body>
+</html>
