@@ -54,7 +54,50 @@
 			3D lightning effects are typically non-physically grounded, and focus on only creating a visually believable replica of lightning for special effects. Our main focus will be implementing the algorithm for the path the lightning takes using energy minimization principles from physics. To make the simulation of particles computationally efficient, we will use Monte-Carlo sampling at each step. 		
             <br> -->
 
-            <h4>Sonia</h4>
+            We developed one algorithm for the lightning path simulation based on this paper (https://doi.org/10.1002/cav.1760). This algorithm calculates the probability distribution of potentials for boundary cells around the current lighting path, and chooses the next candidate cell based on the distribution. As the lightning path grows, so does the number of boundary cells, so to speed up the simulation, we added additional parameters to cap the number of boundary cells to a certain number, removing earlier boundary cells that weren’t as likely to be chosen anyways. This did not have a significant effect on the look of the path. There are also additional parameters n and p that affect the amount of branching that occurs. In general, higher values of n and p correlate to less branching.
+			<br /> <br />
+			The next steps would be to convert this algorithm in 2D to 3D and also play around with changing the scene. For example, this could include adding blocks of negative charges and seeing how the lightning avoids it.
+			<br>
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+                      <tr>
+						<td width="25%">n = 1</td>
+                        <td style="text-align: center;">
+                          <img src="./images/1_1.png" width="90%"/>
+                        </td>
+                        <td style="text-align: center;">
+                          <img src="./images/1_3.png" width="90%"/>
+                        </td>
+						<td style="text-align: center;">
+							<img src="./images/1_5.png" width="90%"/>
+						</td>
+                      </tr>
+					  <tr>
+						<td width="25%">n = 3</td>
+                        <td style="text-align: center;">
+                          <img src="./images/3_1.png" width="90%"/>
+                        </td>
+                        <td style="text-align: center;">
+                          <img src="./images/3_3.png" width="90%"/>
+                        </td>
+						<td style="text-align: center;">
+							<img src="./images/3_5.png" width="90%"/>
+						</td>
+                      </tr>
+					  <tr>
+						<td width="25%">n = 5</td>
+                        <td style="text-align: center;">
+                          <img src="./images/5_1.png" width="90%"/>
+                        </td>
+                        <td style="text-align: center;">
+                          <img src="./images/5_3.png" width="90%"/>
+                        </td>
+						<td style="text-align: center;">
+							<img src="./images/5_5.png" width="90%"/>
+						</td>
+                      </tr>
+                    </table>
+                </div>
 
             <h4>James</h4>
 			<!-- There are two main challenges:	
