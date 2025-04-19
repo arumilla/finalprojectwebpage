@@ -43,21 +43,23 @@
 
 		<h2>Accomplishments</h2>
 		&emsp; 
-		After reading through several papers, we realized that it will be difficult and resource intensive to accomplish our previous goal of writing a physically based simulation so we’ve shifted focus on just providing a variety of ways of finding paths for real time lightning. Furthermore, we wanted to add more interactivity to the simulation so we decided to go with using project 4 as a baseline to work off of instead of blender.
-        <br>
-        <br>
-        &emsp; We divided up the work to focus on two parts, implementing the lightning paths algorithms and working with the homework 4 skeleton to create a platform to display our results on.
+		After reading through the graphics and physics literature of lightning, we realized that real-life lightning is still poorly understood. Most physically-based simulated results focus solely on path-generation via the diaelectric breakdown model (DBM), which involves solving a system of partial differential equations relating to the electric charge, fields, and potential of points in the atmosphere. However, the most up-to-date hypothesis on real-life lightning formation argues that the propogation of lightning "leaders" is not based on electric fields, but rather an accumulation of metastable oxygen molecules. Thus, because this is a computer graphics and not a physics class, we adjusted the scope of our project to come up with fast approximations for these models, so that lightning can be configured, generated, and rendered in real-time. In order to demonstrate that these approximations are valid, we also opt to add interactivity to the simulation. 
+        <br><br>
+        &emsp; We build off the simulation and rendering framework of Homework 4, dividing the project into the two focuses: 1) fast approximations, and 2) interactivity. 1) focuses on implementing variations on 2 existing models for physically-based lightning, with options for potentially a 3rd. 2) focuses on adding GUI elements and shaders for the interactivity and real-time rendering aspect of the project.
 
-		<h3>Lightning path simulation</h3>
+		<h3>Lightning Path Simulation</h3>
 		<p>
 			<!-- &emsp; 
 			3D lightning effects are typically non-physically grounded, and focus on only creating a visually believable replica of lightning for special effects. Our main focus will be implementing the algorithm for the path the lightning takes using energy minimization principles from physics. To make the simulation of particles computationally efficient, we will use Monte-Carlo sampling at each step. 		
             <br> -->
 
-            We developed one algorithm for the lightning path simulation based on this paper (https://doi.org/10.1002/cav.1760). This algorithm calculates the probability distribution of potentials for boundary cells around the current lighting path, and chooses the next candidate cell based on the distribution. As the lightning path grows, so does the number of boundary cells, so to speed up the simulation, we added additional parameters to cap the number of boundary cells to a certain number, removing earlier boundary cells that weren’t as likely to be chosen anyways. This did not have a significant effect on the look of the path. There are also additional parameters n and p that affect the amount of branching that occurs. In general, higher values of n and p correlate to less branching.
-			<br /> <br />
-			The next steps would be to convert this algorithm in 2D to 3D and also play around with changing the scene. For example, this could include adding blocks of negative charges and seeing how the lightning avoids it.
-			<br>
+			<h4>A fast approximation to the DBM</h4>
+
+            One path algorithm we implemented is based off a fast approximation to the DBM refernced in this paper (https://doi.org/10.1002/cav.1760). This algorithm calculates the approximate probability distribution of potentials based on the DBM, for boundary cells around the current lighting path, and chooses the next candidate cell based on the distribution. As the lightning path grows, so does the number of boundary cells. To speed up the simulation, we vectorized the probability computation and added additional parameters to cap the number of boundary cells to a certain number by removing earlier boundary cells with low probability of sampling. Additional parameters \(n\) and \(p\) affect the amount of branching that occurs. In general, higher values of \(n\) and \(p\) correlate to less branching.
+			<br><br>
+			Natural next steps include lifting the algorithm from 2D to 3D and performing additional optimizations. Additionally, because the model is physically-based, we can add scene elements such as negative charges or electric fields, which would alter the behavior of lightning.
+			<br><br>
+
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <table style="width: 100%; text-align: center; border-collapse: collapse;">
                       <tr>
@@ -99,16 +101,13 @@
                     </table>
                 </div>
 
-            <h4>James</h4>
-			<!-- There are two main challenges:	
-			<ol>
-				<li>
-					implementing a modern, realistic model for generating the successive fractal paths which characterize lightning
-				</li>
-				<li>
-					modeling the luminance of the ionized particles based on thermodynamics
-				</li>
-			</ol> -->
+			<h4>Recursive space colonization</h4>
+			
+			Another path algorithm we implemented is based off a space colonization algorithm - originally designed as an algorithm for generating foliage and trees [ref] - introduced in the paper [ref]. While the algorithm is not rigidly grounded in physics, there are several compelling intuitive arguments for why space colonization is effective.
+			(TODO: make to list)
+			Space colonization is incredibly fast compared to physically-based models.
+			Once the environment is initially configured, the actual path formation (assuming no branching) is entirely determinstic.
+			Corona pulses and metastable accumulation in the model proposed by Locke [ref], operate more similarly to the space colonization attractor and kill model.
         </p>
 		
 		<h3>Simulation platform</h3>
