@@ -10,7 +10,7 @@
 
 			.container {
 				margin: 0 auto;
-				padding: 60px 20%;
+				padding: 0px 5%;
 			}
 
 			figure {
@@ -29,9 +29,6 @@
 	<body>
 		<div class="container">
 		<h1>Lightning Variety Simulation Project</h1>
-		<div style="text-align: center;">Names: Jennifer Cao, Sonia Chacon, Claire Ding, James Ni</div>
-
-		<br>
 
 		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/milestone/index.html">https://arumilla.github.io/finalprojectwebpage/milestone/index.html</a>
 		
@@ -41,76 +38,55 @@
 
         <br>
 
-		Link to Video: <a href="https://docs.google.com/presentation/d/14tYuB4O1VHmGTCLb5vw9DYbbn5CyloZO2ufeRsMVb-4/edit?usp=sharing">https://docs.google.com/presentation/d/14tYuB4O1VHmGTCLb5vw9DYbbn5CyloZO2ufeRsMVb-4/edit?usp=sharing</a>
+		Link to Video: <a href="https://drive.google.com/file/d/1LyKl3Y6bnOCvt6EJFjdjZT5RbI_mjOGo/view?usp=sharing">https://drive.google.com/file/d/1LyKl3Y6bnOCvt6EJFjdjZT5RbI_mjOGo/view?usp=sharing</a>
 
         <br>
 
 		<h2>Accomplishments</h2>
-		&emsp; After reading through the graphics and physics literature of lightning, we realized that real-life lightning is still poorly understood. Most physically-based simulated results focus solely on path-generation via the diaelectric breakdown model (DBM), which involves solving a system of partial differential equations relating to the electric charge, fields, and potential of points in the atmosphere [1, 2]. However, the most up-to-date hypothesis on real-life lightning formation argues that the propogation of lightning "leaders" is not based on electric fields, but rather an accumulation of metastable oxygen molecules [3]. Thus, because this is a computer graphics and not a physics class, we adjusted the scope of our project to come up with fast approximations for existing models, so that lightning can be configured, generated, and rendered in real-time. In order to demonstrate that these approximations are valid, we also opt to add interactivity to the simulation. 
-        <br><br>
-        &emsp; We build off the simulation and rendering framework of Homework 4, dividing the project into the two focuses: 1) fast approximations, and 2) interactivity. 1) focuses on implementing variations on 2 existing models for physically-based lightning, with options for potentially a 3rd. 2) focuses on adding GUI elements and shaders for the interactivity and real-time rendering aspect of the project.
-
-		<h3>Lightning Path Simulation</h3>
-		<p>
-
-			<h4>A fast approximation to the DBM</h4>
-
-            &emsp; One path algorithm we implemented is based off a fast approximation to the DBM refernced in [2]. This algorithm calculates the approximate probability distribution of potentials based on the DBM, for boundary cells around the current lighting path, and chooses the next candidate cell based on the distribution. As the lightning path grows, so does the number of boundary cells. To speed up the simulation, we vectorized the probability computation and added additional parameters to cap the number of boundary cells to a certain number by removing earlier boundary cells with low probability of sampling. Additional parameters \(n\) and \(p\) affect the amount of branching that occurs. In general, higher values of \(n\) and \(p\) correlate to less branching.
-			<br><br>
-			&emsp; Natural next steps include lifting the algorithm from 2D to 3D and performing additional optimizations. Additionally, because the model is physically-based, we can add scene elements such as negative charges or electric fields, which would alter the behavior of lightning.
-			<br><br>
+		&emsp; After research, we realized that real-life lightning is still poorly understood and newer research points to metastable oxygen accumulation rather than DBM. Thus, because this is a computer graphics, we adjusted the scope of our project to focus on fast approximations and real-time rendering by building off of homework 4.		<h3>Lightning Path Simulation</h3>
+		<p> 
+			&emsp; One path algorithm we implemented is based off a fast approximation to DBM. This algorithm calculates the approximate probability distribution of potentials and chooses the next candidate cell based on it. To optimize, we vectorized the probability computation and added parameters(\(n\) and \(p\)) to limit the number of cells by controlling branching. Next steps include lifting the algorithm from 2D to 3D and performing additional optimizations.
 
 			<div style="display: flex; flex-direction: column; align-items: center;">
 				<table style="text-align: center; border-collapse: collapse;">
 					<tr>
 					<td style="text-align: center;">
-						<img src="./images/1_1.png" width="200px"/>
+						<img src="./images/1_1.png" width="70px"/>
 						<figcaption>n = 1, p = 1</figcaption>
 					</td>
 					<td style="text-align: center;">
-						<img src="./images/1_3.png" width="200px"/>
+						<img src="./images/1_3.png" width="70px"/>
 						<figcaption>n = 1, p = 3</figcaption>
 					</td>
-					</tr>
-					<tr>
 					<td style="text-align: center;">
-						<img src="./images/3_1.png" width="200px"/>
+						<img src="./images/3_1.png" width="70px"/>
 						<figcaption>n = 3, p = 1</figcaption>
 					</td>
 					<td style="text-align: center;">
-						<img src="./images/3_3.png" width="200px"/>
+						<img src="./images/3_3.png" width="70px"/>
 						<figcaption>n = 3, p = 3</figcaption>
 					</td>
 					</tr>
 				</table>
 			</div>
 
-			<h4>Recursive space colonization</h4>
 			
-			&emsp; Another path algorithm we implemented is based off a space colonization algorithm - originally designed as an algorithm for generating foliage and trees [ref] - introduced in the paper [ref]. While the algorithm is not rigidly grounded in physics, there are several compelling arguments for why space colonization can be a better approximation to actual lightning than a DBM model:
-			<ol>
-				<li>Space colonization is incredibly fast compared to physically-based models (PDE solvers).</li>
-				<li>Once the environment is initially configured, the actual path formation (assuming no branching) is entirely determinstic.</li>
-				<li>Corona pulses and metastable accumulation in the model proposed by Locke [ref], operate more similarly to the space colonization attractor and kill model.</li>
-			</ol>
-
-			&emsp; We developed a vectorized, and recursive space colonization algorithm, improving on the fixed and limited branching method used in [ref]. We also made the stepping of the main leader and branches synchronous in anticipation of time-based simulation. Natural next steps include coming up with better branching heuristics (colonization volumes) which better model real-life lightning, and incorporating dynamic time steps (currently, each step occurs over 1 unit of time). <br><br>
+			&emsp;Another path algorithm we implemented is space colonization (used for generating foliage and trees). While the algorithm is not grounded in physics, it can be a better approximation because it is significantly faster, and it operates more similarly to metastable accumulation in newer research. Furthermore, we improved the algorithm by vectorizing it and made the stepping of the main leader and branches synchronous in anticipation of time-based simulation. Next steps include coming up with more realistic branching heuristics, and incorporating dynamic time steps.
+			<br><br>
 
 			<div style="display: flex; flex-direction: column; align-items: center;">
 				<table style="text-align: center; border-collapse: collapse;">
 					<tr>
 						<td style="text-align: center;">
-							<img src="./images/sc.png" width="200px"/>
+							<img src="./images/sc.png" width="150px"/>
 							<figcaption>A 3D rendered lightning bolt via space colonization.</figcaption>
 						</td>
 						<td style="text-align: center;">
-							<img src="./images/sc_vol.png" width="200px"/>
+							<img src="./images/sc_vol.png" width="150px"/>
 							<figcaption>The volume and attractor points used for the main path.</figcaption>
 						</td>
-					</tr>
-					<tr>
 						<td colspan="2" style="text-align: center;">
-							<img src="./images/sc_branches.png" width="200px"/>
+							<img src="./images/sc_branches.png" width="150px"/>
 							<figcaption>Branch volumes and endpoints.</figcaption>
 						</td>
 					</tr>
@@ -121,86 +97,27 @@
 		
 		<h3>Simulation platform</h3>
 		<p>
-			<!-- &emsp;
-			Our baseline plan is to replicate the implementation and result of Physically Based Animation and Rendering of Lightning by T. Kim and M. Lin which presented a physically based algorithm for the simulation, animation, and rendering of sustained electric arcs. 
-			<br> -->
-
-            <h4>Claire</h4>
-
-            <h4>Shaders</h4>
-            <p>
-                &emsp;For rendering the lightning to look like a light source, we decided on using shaders to create a bloom effect since it will no longer be physically based. 
-                <br>
-                &emsp;In order to create the bloom effect, we decided to follow OpenGL’s guide on creating the bloom effect using a high pass shader(to isolate the light emitting bodies), a gaussian blur shader(to create the light emitting effect) and a compositing shader that combines the base image of the scene with the blurred scene to create the final bloom effect. 
-                <br>
-                <br>
-                &emsp;Currently, we have completed the high pass shader and the gaussian blur shader but in order to create the final image, we will need to modify the rendering pipeline in homework 4 to support running multiple shaders. 
-                <br>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <table style="width: 100%; text-align: center; border-collapse: collapse;">
-                      <tr>
-                        <td style="text-align: center;">
-                          <img src="./images/highpass.png" width="90%"/>
-                          <figcaption>A picture rendered with a high-pass shader</figcaption>
-                        </td>
-                        <td style="text-align: center;">
-                          <img src="./images/gaussblur.png" width="95%"/>
-                          <figcaption>A picture rentered with a Gaussian blur shader</figcaption>
-                        </td>
-                      </tr>
-                    </table>
-                </div>
-            </p>
-			<!-- However, we hope to extend this work as follows:
-			<ul>
-				<li>
-					modeling physical effects specific to a Monte Carlo raytracer, which previous works do not originally use
-				</li>
-				<li>
-					temporal simulation (ignoring or approximating relativistic effects)
-				</li>
-				<li>
-					comparisons with more modern models for how lightning behaves, as the phenomenon is still poorly understood
-				</li>
-			</ul> -->
+			&emsp;In order to use the paths generated, we added the ability to load in 3D coordinates from a CSV file and create a mesh of cylinders from it with keyboard controls to step through the path. The next step will be creating the scene for the lightning and adding the ability to adjust starting locations for interactivity.
+			<br>
+			&emsp;For rendering the lightning, we will use shaders to add a bloom post-processing effect following OpenGL’s guide. The additional shaders needed for this are completed but we will need to modify the rendering pipeline support post-processing using frame buffers.
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+					<tr>
+					<td style="text-align: center;">
+						<img src="./images/highpass.png" width="150px"/>
+						<figcaption>A picture rendered with a high-pass shader</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/gaussblur.png" width="160px"/>
+						<figcaption>A picture rentered with a Gaussian blur shader</figcaption>
+					</td>
+					</tr>
+				</table>
+			</div>
 		</p>
 		<h2>Schedule</h2>
 
-        &emsp; Due to large modifications to the project, our initial roadmap is no longer valid. In the coming weeks, we plan to:
-
-		<h3>Week 3 (4/20 - 4/26)</h3>
-		<p>
-			<ul>
-				<li>
-                    Lift the approximate DBM model to 3D, perform further optimizations, and experiment with changing the electric field via scene elements.
-				</li>
-                <li>
-                    Improve the branching heuristics of the space colonization model, and add dynamic step lengths for real-time simulation. 
-				</li>
-				<li>
-					claire
-				</li>
-				<li>
-					Continue work on the rendering pipeline and integrate with updated simulation platform.
-				</li>
-				<li>
-					(Reach Goal) As a 3rd method, come up with a simulated model of Locke [ref] by simulating gradual metastable accumulation using approximations of the PDE system.
-				</li>
-			</ul>
-        </p>
-
-		<h3>Week 4 (4/27 - 5/3)</h3>
-		<p>
-			Continue working on the tasks above, and critically integrate all the pieces together.
-        </p>
-
-		<h2>References</h2>
-		<p>
-			[1] Kim T, Lin M.C. (2004). Physically based animation and rendering of lightning. <em>12th Pacific Conference on Computer Graphics and Applications</em>, Seoul, Korea (South), 2004. <a href="https://doi.org/10.1109/PCCGA.2004.1348357">10.1109/PCCGA.2004.1348357</a><br>
-			[2] Yun J, Son M, Choi B, Kim T, Yoon S.E. (2017). Physically inspired, interactive lightning generation. <em>Computer Animation and Virtual Worlds.</em> 28:e1760. <a href="https://doi.org/10.1002/cav.1760">10.1002/cav.1760</a><br>
-			[3] Lowke, J & Szili, E. (2022). Toward a theory of "stepped-leaders" of lightning. <em>Journal of Physics D: Applied Physics.</em> 56. <a href="https://doi.org/10.1088/1361-6463/aca103">10.1088/1361-6463/aca103</a><br> 
-			[4] Reis N & Fernandes A.R. (2022). Using a Space Colonization Algorithm for Lightning Simulation. <em>2022 International Conference on Graphics and Interaction (ICGI)</em>, Aveiro, Portugal, 2022. <a href="https://doi.org/10.1109/ICGI57174.2022.9990427">10.1109/ICGI57174.2022.9990427</a><br>
-		</p>
+        &emsp; Due to large modifications to the project, our initial roadmap is no longer valid. For the next two weeks, we plan on adding the extensions metioned earlier while also working on integration in the last week.
 
     </body>
 </html>
