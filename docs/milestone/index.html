@@ -43,7 +43,9 @@
         <br>
 
 		<h2>Accomplishments</h2>
-		&emsp; After research, we realized that real-life lightning is still poorly understood and newer research points to metastable oxygen accumulation rather than DBM. Thus, because this is a computer graphics, we adjusted the scope of our project to focus on fast approximations and real-time rendering by building off of homework 4.		<h3>Lightning Path Simulation</h3>
+		&emsp; After researching the literature, we realized that real-life lightning is still poorly understood, and newer research hypotehsizes the propogation of lightning is based on the accumulation of metastable oxygen accumulation rather than an electric potential-based diaelectric breakdown model (DBM). Because this is not a physics class, we adjusted the scope of our project to focus on fast approximations to existing models and real-time rendering, building off of homework 4.
+		
+		<h3>Lightning Path Simulation</h3>
 		<p> 
 			&emsp; One path algorithm we implemented is based off a fast approximation to DBM. This algorithm calculates the approximate probability distribution of potentials and chooses the next candidate cell based on it. To optimize, we vectorized the probability computation and added parameters(\(n\) and \(p\)) to limit the number of cells by controlling branching. Next steps include lifting the algorithm from 2D to 3D and performing additional optimizations.
 
@@ -51,19 +53,19 @@
 				<table style="text-align: center; border-collapse: collapse;">
 					<tr>
 					<td style="text-align: center;">
-						<img src="./images/1_1.png" width="70px"/>
+						<img src="./images/1_1.png" width="200px"/>
 						<figcaption>n = 1, p = 1</figcaption>
 					</td>
 					<td style="text-align: center;">
-						<img src="./images/1_3.png" width="70px"/>
+						<img src="./images/1_3.png" width="200px"/>
 						<figcaption>n = 1, p = 3</figcaption>
 					</td>
 					<td style="text-align: center;">
-						<img src="./images/3_1.png" width="70px"/>
+						<img src="./images/3_1.png" width="200px"/>
 						<figcaption>n = 3, p = 1</figcaption>
 					</td>
 					<td style="text-align: center;">
-						<img src="./images/3_3.png" width="70px"/>
+						<img src="./images/3_3.png" width="200px"/>
 						<figcaption>n = 3, p = 3</figcaption>
 					</td>
 					</tr>
@@ -78,15 +80,15 @@
 				<table style="text-align: center; border-collapse: collapse;">
 					<tr>
 						<td style="text-align: center;">
-							<img src="./images/sc.png" width="150px"/>
+							<img src="./images/sc.png" width="250px"/>
 							<figcaption>A 3D rendered lightning bolt via space colonization.</figcaption>
 						</td>
 						<td style="text-align: center;">
-							<img src="./images/sc_vol.png" width="150px"/>
+							<img src="./images/sc_vol.png" width="250px"/>
 							<figcaption>The volume and attractor points used for the main path.</figcaption>
 						</td>
 						<td colspan="2" style="text-align: center;">
-							<img src="./images/sc_branches.png" width="150px"/>
+							<img src="./images/sc_branches.png" width="250px"/>
 							<figcaption>Branch volumes and endpoints.</figcaption>
 						</td>
 					</tr>
@@ -97,9 +99,10 @@
 		
 		<h3>Simulation platform</h3>
 		<p>
-			&emsp;In order to use the paths generated, we added the ability to load in 3D coordinates from a CSV file and create a mesh of cylinders from it with keyboard controls to step through the path. The next step will be creating the scene for the lightning and adding the ability to adjust starting locations for interactivity.
+			&emsp; In order to use the paths generated, we added the ability to load from a file, manually place, and use 3D coordinates to create a mesh of cylinders, with keyboard controls to step through the path. Next, we will create a scene and add more interactive features such as starting location.
 			<br>
-			&emsp;For rendering the lightning, we will use shaders to add a bloom post-processing effect following OpenGL’s guide. The additional shaders needed for this are completed but we will need to modify the rendering pipeline support post-processing using frame buffers.
+			&emsp; For realistic rendering, we will use shaders to add a bloom post-processing effect following OpenGL specifications. The component shaders needed are completed, but we will need to modify the rendering pipeline support post-processing using frame buffers.
+
 			<div style="display: flex; flex-direction: column; align-items: center;">
 				<table style="width: 100%; text-align: center; border-collapse: collapse;">
 					<tr>
@@ -115,6 +118,7 @@
 				</table>
 			</div>
 		</p>
+		
 		<h2>Schedule</h2>
 
         &emsp; Due to large modifications to the project, our initial roadmap is no longer valid. For the next two weeks, we plan on adding the extensions metioned earlier while also working on integration in the last week.
