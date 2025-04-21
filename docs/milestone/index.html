@@ -59,30 +59,30 @@
 			&emsp; Natural next steps include lifting the algorithm from 2D to 3D and performing additional optimizations. Additionally, because the model is physically-based, we can add scene elements such as negative charges or electric fields, which would alter the behavior of lightning.
 			<br><br>
 
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <table style="text-align: center; border-collapse: collapse;">
-                      <tr>
-                        <td style="text-align: center;">
-                          <img src="./images/1_1.png" width="200px"/>
-						  <figcaption>n = 1, p = 1</figcaption>
-                        </td>
-                        <td style="text-align: center;">
-                          <img src="./images/1_3.png" width="200px"/>
-						  <figcaption>n = 1, p = 3</figcaption>
-                        </td>
-                      </tr>
-					  <tr>
-                        <td style="text-align: center;">
-                          <img src="./images/3_1.png" width="200px"/>
-						  <figcaption>n = 3, p = 1</figcaption>
-                        </td>
-                        <td style="text-align: center;">
-                          <img src="./images/3_3.png" width="200px"/>
-						  <figcaption>n = 3, p = 3</figcaption>
-                        </td>
-                      </tr>
-                    </table>
-                </div>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="text-align: center; border-collapse: collapse;">
+					<tr>
+					<td style="text-align: center;">
+						<img src="./images/1_1.png" width="200px"/>
+						<figcaption>n = 1, p = 1</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/1_3.png" width="200px"/>
+						<figcaption>n = 1, p = 3</figcaption>
+					</td>
+					</tr>
+					<tr>
+					<td style="text-align: center;">
+						<img src="./images/3_1.png" width="200px"/>
+						<figcaption>n = 3, p = 1</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/3_3.png" width="200px"/>
+						<figcaption>n = 3, p = 3</figcaption>
+					</td>
+					</tr>
+				</table>
+			</div>
 
 			<h4>Recursive space colonization</h4>
 			
@@ -93,7 +93,28 @@
 				<li>Corona pulses and metastable accumulation in the model proposed by Locke [ref], operate more similarly to the space colonization attractor and kill model.</li>
 			</ol>
 
-			&emsp; We developed a vectorized, and recursive space colonization algorithm, improving on the fixed and limited branching method used in [ref]. We also made the stepping of the main leader and branches synchronous in anticipation of time-based simulation. Natural next steps include coming up with better branching heuristics (colonization volumes) which better model real-life lightning, and incorporating dynamic time steps (currently, each step occurs over 1 unit of time).
+			&emsp; We developed a vectorized, and recursive space colonization algorithm, improving on the fixed and limited branching method used in [ref]. We also made the stepping of the main leader and branches synchronous in anticipation of time-based simulation. Natural next steps include coming up with better branching heuristics (colonization volumes) which better model real-life lightning, and incorporating dynamic time steps (currently, each step occurs over 1 unit of time). <br><br>
+
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="text-align: center; border-collapse: collapse;">
+					<tr>
+						<td style="text-align: center;">
+							<img src="./images/sc.png" width="200px"/>
+							<figcaption>A 3D rendered lightning bolt via space colonization.</figcaption>
+						</td>
+						<td style="text-align: center;">
+							<img src="./images/sc_vol.png" width="200px"/>
+							<figcaption>The volume and attractor points used for the main path.</figcaption>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" style="text-align: center;">
+							<img src="./images/sc_branches.png" width="200px"/>
+							<figcaption>Branch volumes and endpoints.</figcaption>
+						</td>
+					</tr>
+				</table>
+			</div>
 			
         </p>
 		
@@ -174,10 +195,10 @@
 
 		<h2>References</h2>
 		<p>
-			[1] <br>
+			[1] Kim T, Lin M.C. (2004). Physically based animation and rendering of lightning. <em>12th Pacific Conference on Computer Graphics and Applications</em>, Seoul, Korea (South), 2004. <a href="https://doi.org/10.1109/PCCGA.2004.1348357">10.1109/PCCGA.2004.1348357</a><br>
 			[2] Yun J, Son M, Choi B, Kim T, Yoon S.E. (2017). Physically inspired, interactive lightning generation. <em>Computer Animation and Virtual Worlds.</em> 28:e1760. <a href="https://doi.org/10.1002/cav.1760">10.1002/cav.1760</a><br>
 			[3] Lowke, J & Szili, E. (2022). Toward a theory of "stepped-leaders" of lightning. <em>Journal of Physics D: Applied Physics.</em> 56. <a href="https://doi.org/10.1088/1361-6463/aca103">10.1088/1361-6463/aca103</a><br> 
-			[4] Reis N & Fernandes A.R. (2022) Using a Space Colonization Algorithm for Lightning Simulation. <em>2022 International Conference on Graphics and Interaction (ICGI)</em>, Aveiro, Portugal, 2022. <a href="https://doi.org/10.1109/ICGI57174.2022.9990427">10.1109/ICGI57174.2022.9990427</a><br>
+			[4] Reis N & Fernandes A.R. (2022). Using a Space Colonization Algorithm for Lightning Simulation. <em>2022 International Conference on Graphics and Interaction (ICGI)</em>, Aveiro, Portugal, 2022. <a href="https://doi.org/10.1109/ICGI57174.2022.9990427">10.1109/ICGI57174.2022.9990427</a><br>
 		</p>
 
     </body>
