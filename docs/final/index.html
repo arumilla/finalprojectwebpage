@@ -66,7 +66,7 @@
 		<p>
 			<h3>Fast DBM</h3>
 			&emsp; 
-			The fast DBM approach builds off a 2017 paper. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
+			The fast DBM approach builds off a 2017 paper [2]. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
 
 			\[ V_{approx, \{P, N, B}\} = \sum_{i=1}^{n}(\frac{1}{r_{i}})^{\rho} \]
 
@@ -138,7 +138,7 @@
 					<tr>
 						<td style="text-align: center;">
 							<img src="./images/db_n1_p1_d64.jpeg" width="90%"/>
-							<figcaption>&#951 = 1 and \(\rho\) = 1</figcaption>
+							<figcaption>\(\eta\) = 1 and \(\rho\) = 1</figcaption>
 						</td>
 						<td style="text-align: center;">
 							<img src="./images/db_n2_p2_d64.jpeg" width="90%"/>
