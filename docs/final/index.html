@@ -32,25 +32,23 @@
 		<div style="text-align: center;">Names: Jennifer Cao, Sonia Chacon, Claire Ding, James Ni</div>
 
 		<br>
-
 		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/final/index.html">https://arumilla.github.io/finalprojectwebpage/final/index.html</a>
-		
 		<br>
-
 		Link to slides: <a href="https://github.com/jding25/lightningsimulation/tree/sc">https://github.com/jding25/lightningsimulation/tree/sc</a>
-
 		<br>
-		Link to video: <a href="https://github.com/jding25/lightningsimulation/tree/sc">https://github.com/jding25/lightningsimulation/tree/sc</a>
+		Link to video: <a href="https://youtu.be/g6NiUkLZbIg">https://youtu.be/g6NiUkLZbIg</a>
 
+		<br><br>
+		
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="./images/dbm_video.gif" width="25%"/>
+				  <img src="./images/dbm_video.gif" width="90%"/>
 				  <figcaption>Fast DBM</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="./images/sc_video.gif" width="25%"/>
+				  <img src="./images/sc_video.gif" width="82%"/>
 				  <figcaption>Space Colonization</figcaption>
 				</td>
 			  </tr>
@@ -62,36 +60,33 @@
 		This project focuses on simulating realistic atmospheric lightning in real-time. Our initial goal was to implement a highly realistic physical model using the latest research on lightning, such as the dielectric breakdown model (DBM). 
 		<br><br>
 		&emsp; 
-		We diverged from our initial plans for two main reasons: (1) the DBM necessitates partial differential equation solvers, which are unable to run in real-time, and (2) the DBM is no longer the most up-to-date model for lightning formation. Thus, we changed our focus to come up with two fast approximations to existing physical models: (1) a fast DBM approximation, and (2) a space colonization model. Building off the framework in Homework 4, we added a fully-functional GUI for choosing the algorithm, visualizing the path, and changing the lightning parameters and appearance. Both algorithms can simulate and run in real time. In order to make the path realistic, we implemented a post-processing bloom shader to give the appearance of much stronger light.
+		We diverged from our initial plans for two main reasons: (1) the DBM necessitates partial differential equation solvers, which are unable to run in real-time, and (2) the DBM is no longer the most up-to-date model for lightning formation. Thus, we changed our focus to come up with two fast approximations to existing physical models: (1) a fast DBM approximation, and (2) a space colonization model which mirrors a metastable oxygen model. Building off the framework in Homework 4, we added a fully-functional GUI for choosing the algorithm, visualizing the path, and changing the lightning parameters and appearance. Both algorithms can simulate and run in real time. As a proof of concept, we also implemented GPU acceleration for large batches of lightning bolts. In order to make the path realistic, we implemented a post-processing bloom shader to give the appearance of much stronger light.
 				
 		<h2>Technical Approach</h2>
 		<p>
 			<h3>Fast DBM</h3>
-			<br>
 			&emsp; 
-			The fast DBM approach builds off a 2017 paper [link paper here]. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
-			<br><br>
+			The fast DBM approach builds off a 2017 paper. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
+
 			\[ V_{approx, \{P, N, B}\} = \sum_{i=1}^{n}(\frac{1}{r_{i}})^{\rho} \]
 
 			<br><br>
-			(“cite” a diagram that the original paper uses to better explain)
-
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<img src="./images/dbm_graph.png" width="50%"/>
+				<figcaption>&emsp; This 2D graphic that shows the negative path (grey), positive ground (black), and boundary cells (blue) (https://onlinelibrary.wiley.com/doi/10.1002/cav.1760)</figcaption>
+			</div>
 			<br><br>	
+
 			&emsp; 
 			This approximates the potential calculation for a boundary cell as the sum of the inverse distance \(r_{i}\) to all cells. The tunable parameter \(\rho\) biases the potential towards nearby cells over distant cells. Observe that there are three different sums, one for the potential between a boundary point and each of the positive, negative, and other boundary cells. The net potential for a single cell is
 
-			<br><br>
 			\[ \phi = \frac{P}{N*B} \]
 
-			<br><br>	
 			&emsp;
 			Using the potentials, we compute the probability of sampling that boundary cell as
 
-			<br><br>	
-			&emsp;
 			\[ P_{i} = \frac{(\phi_{i})^{\eta}}{\sum_{j=1}^{n}(\phi_{j})^{\eta}}, \]
 
-			<br><br>	
 			&emsp;
 			where \(\eta\) biases the probability to high-probability points. In general, a higher \(\rho\) or \(\eta\) decreases the degree of branching.
 
@@ -99,61 +94,71 @@
 
 			<h4>Variations on Depth</h4>
 			<div style="display: flex; flex-direction: column; align-items: center;">
-				<table style="width: 100%; text-align: center; border-collapse: collapse;">
-				  <tr>
-					<td style="text-align: center;">
-					  <img src="./images/db_n1_p1_d32.jpeg" width="25%"/>
-					  <figcaption>Depth = 32</figcaption>
-					</td>
-					<td style="text-align: center;">
-						<img src="./images/db_n1_p1_d64.jpeg" width="25%"/>
-						<figcaption>Depth = 64</figcaption>
-					  </td>
-				  </tr>
-				  <tr>
-					<td style="text-align: center;">
-					  <img src="./images/db_n1_p1_d96.jpeg" width="25%"/>
-					  <figcaption>Depth = 96</figcaption>
-					</td>
-					<td style="text-align: center;">
-						<img src="./images/db_n1_p1_d128.jpeg" width="25%"/>
-						<figcaption>Depth = 128</figcaption>
-					  </td>
-				  </tr>
-				</table>
+				<figure>
+					<table style="width: 100%; text-align: center; border-collapse: collapse;">
+					<tr>
+						<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d32.jpeg" width="90%"/>
+						<figcaption>Depth = 32</figcaption>
+						</td>
+						<td style="text-align: center;">
+							<img src="./images/db_n1_p1_d64.jpeg" width="90%"/>
+							<figcaption>Depth = 64</figcaption>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d96.jpeg" width="90%"/>
+						<figcaption>Depth = 96</figcaption>
+						</td>
+						<td style="text-align: center;">
+							<img src="./images/db_n1_p1_d128.jpeg" width="90%"/>
+							<figcaption>Depth = 128</figcaption>
+						</td>
+					</tr>
+					</table>
+				</figure>
+				<figcaption>Increasing the depth increases the overall resolution, which allows for more complex branching structure.</figcaption>
 			</div>
 
-			<h4>Variations on &#951 and &#961</h4>
+			<h4>Variations on \(\eta\) and \(\rho\)</h4>
 			<div style="display: flex; flex-direction: column; align-items: center;">
-				<table style="width: 100%; text-align: center; border-collapse: collapse;">
-				  <tr>
-					<td style="text-align: center;">
-					  <img src="./images/db_n1_p1_d64.jpeg" width="25%"/>
-					  <figcaption>&#951 = 1 and &#961 = 1</figcaption>
-					</td>
-					<td style="text-align: center;">
-						<img src="./images/db_n1_p2_d64.jpeg" width="25%"/>
-						<figcaption>&#951 = 1 and &#961 = 2</figcaption>
-					  </td>
-				  </tr>
-				  <tr>
-					<td style="text-align: center;">
-					  <img src="./images/db_n2_p2_d64.jpeg" width="25%"/>
-					  <figcaption>&#951 = 2 and &#961 = 2</figcaption>
-					</td>
-				  </tr>
-				</table>
+				<figure>
+					<table style="width: 100%; text-align: center; border-collapse: collapse;">
+					<tr>
+						<td style="text-align: center;">
+							<img src="./images/db_n1_p1_d64.jpeg" width="90%"/>
+							<figcaption>\(\eta\) = 1 and \(\rho\) = 1</figcaption>
+						</td>
+						<td style="text-align: center;">
+							<img src="./images/db_n1_p2_d64.jpeg" width="90%"/>
+							<figcaption>\(\eta\) = 1 and \(\rho\) = 2</figcaption>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center;">
+							<img src="./images/db_n1_p1_d64.jpeg" width="90%"/>
+							<figcaption>&#951 = 1 and \(\rho\) = 1</figcaption>
+						</td>
+						<td style="text-align: center;">
+							<img src="./images/db_n2_p2_d64.jpeg" width="90%"/>
+							<figcaption>\(\eta\) = 2 and \(\rho\) = 2</figcaption>
+						</td>
+					</tr>
+					</table>
+				</figure>
+				<figcaption>Increasing \(\rho\) and \(\eta\) makes it less likely to take branches.</figcaption>
 			</div>
 
-			<br><br>	
+			<br>	
 			&emsp;
-			Once we calculate all the potentials for each boundary cell, these potentials become a probability distribution from which we will select the next candidate to join the lightning path. The idea behind the approximation of the potential is to incentivize the selection of cells that are close to ground, hence moving the lighting in a general downwards direction, while also penalizing cells that are close to the lightning path and other boundary cells, which encourages branching. Once the next candidate cell is one that reaches the ground of the grid, the algorithm stops and the path is complete. In the equations, there are two tunable parameters that can be used to affect the lightning path. Increasing \(\rho\) and \(\phi\) generally cause less branches to be taken.
+			Once we calculate all the potentials for each boundary cell, these potentials become a probability distribution from which we will select the next candidate to join the lightning path. The idea behind the approximation of the potential is to incentivize the selection of cells that are close to ground, hence moving the lighting in a general downwards direction, while also penalizing cells that are close to the lightning path and other boundary cells, which encourages branching. Once the next candidate cell is one that reaches the ground of the grid, the algorithm stops and the path is complete. In the equations, there are two tunable parameters that can be used to affect the lightning path. Increasing \(\rho\) and \(\eta\) generally cause less branches to be taken.
 	
 			<br><br>	
 			&emsp;
-			In addition to implementing the fast DBM algorithm proposed by the previous paper, we also made some changes in order to speed up execution. One option that we explored was to prune boundary cells after some parameterized number of boundary cells in the list. This way we could omit potential calculations for boundary cells that are furthest from the current end of the path, which are not very likely to be selected anyway. This did provide some improvement, but this was mostly made irrelevant by the time we implemented our second optimization, being the vectorization of calculations. In the second iteration of this algorithm, we kept the calculations the same, but designed it such that it utilized vectorized functions, such as in numpy. This provided a major improvement in calculation speed, allowing us to calculate the path quickly, and scale for higher resolutions.
+			In addition to implementing the fast DBM algorithm proposed by the previous paper, we also made some changes in order to speed up execution. One option that we explored was to prune boundary cells after some parameterized number of boundary cells in the list. This way we could omit potential calculations for boundary cells that are furthest from the current end of the path, which are not very likely to be selected anyway. This did provide some improvement, but this was mostly made irrelevant by the time we implemented our second optimization, being the vectorization of calculations. In the second iteration of this algorithm, we kept the calculations the same, but designed it such that it utilized vectorized functions, such as in NumPy. This provided a major improvement in calculation speed, allowing us to calculate the path quickly, and scale for higher resolutions.
 			
-			<br><br>	
+			<h3>Space Colonization</h3>
 			&emsp;
 			The DBM model makes for a compelling and intuitive explanation for the path of lightning. However, the potential difference between a charged region in a cloud and the ground, and the electric field it generates, is far too small to cause lightning formation. The most recent model of lightning formation proposes that the lightning leader travels through the atmosphere in a 3 step process:
 			<ol>
@@ -162,60 +167,229 @@
 				<li> Electrons move along the column to produce a near-zero electric field, allowing charges to reach the stepped leader from the ionization source. The process then repeats. </li>
 			</ol>
 
+			<br>
+			&emsp;
+			The space colonization model is based on a 2022 paper on realistic lightning simulation, with several modifications and improvements to ground the algorithm based on the metastable model. Given start and end points, we randomly fill a cylindrical volume between the two points with attractors. The stepped leader of the lightning travels in a direction based on a weighted sum of nearby attractors, which models the distribution of metastable accumulation. In order to maintain the principle of minimum energy, attractors that are too close to the lightning leader are removed.
 
-			<h3>Space Colonization</h3>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<figure>
+					<table style="width: 100%; text-align: center; border-collapse: collapse;">
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/sc_attractor_viz.png" width="90%"/>
+								<figcaption>End, start, and attractor apoints for the main column.</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_branch_viz.png" width="87%"/>
+								<figcaption>End, start, and attractor points for the recursive branches.</figcaption>
+							</td>
+						</tr>
+					</table>
+					<figcaption>This is a visualization of the full volume of attractor points, branches, and resulting lightning path generation. Once the initial cylinder of attractors is generated, the algorithm deterministcally finds the main path.</figcaption>
+				</figure>
+			</div>
 
+			<br>
+			&emsp;
+			The original paper has poor and non-physically accurate branching, so we modify branching to be recursive in nature. Because the end point of the stepped leader, and more fundamentally the algorithm, is deterministically set, we approximate the lower ionization potential and metastable accumulation rate of the branches by recursively updating a probability that a branch's leader steps. We add additional nondeterminism by randomly sampling endpoints of the branches in a 15 to 115 degree range based on the end point and the current distance to the end point.
+
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<figure>
+					<table style="width: 100%; text-align: center; border-collapse: collapse;">
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<figcaption>base</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_br_0.4.png" width="87%"/>
+								<figcaption>branch probability and step = 0.4</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_br_0.8.png" width="87%"/>
+								<figcaption>branch probability and step = 0.8</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<figcaption>base</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_ss_0.4.png" width="87%"/>
+								<figcaption>step size = 0.4</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_ss_0.8.png" width="87%"/>
+								<figcaption>step size = 0.8</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<figcaption>base</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_rad_I_down-K_up_0.2.png" width="87%"/>
+								<figcaption>influence = 0.3, kill = 0.7</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_rad_I_down_K_up_0.4.png" width="87%"/>
+								<figcaption>influence = 0.1, kill = 0.9</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<figcaption>base</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_rad_K_down_I_up_0.2.png" width="87%"/>
+								<figcaption>kill = 0.3, influence = 0.7</figcaption>
+							</td>
+							<td style="text-align: center;">
+								<img src="./images/sc_rad_I_up_K_down_0.4.png" width="87%"/>
+								<figcaption>kill = 0.1, influence = 0.9</figcaption>
+							</td>
+						</tr>
+					</table>
+					<figcaption>Ablation study on various space colonization parameters. Increasing the branch probability and step size creates more branching, but more unrealistic lightning. Increasing the step size results in shorter lightning bolts and less branchiness. Ideally, both the step size and influence/kill radii should be very small, and the attractor density should be very large. Having a larger kill radius compared to influence radius results in very straight lightning bolts and is physically inaccurate. Having a smaller kill radius compared to influence radius results in degenerate cases, which can be interpreted as cloud-to-cloud lightning.</figcaption>
+				</figure>
+			</div>
+
+			<h3>Hardware Acceleration</h3>
+			
+			&emsp;
+			We implemented brief sketches of our algorithms in Python for fast development. We then considered three main approaches to accelerate our path calculations:
+			<ol>
+				<li> Translate the unoptimized Python code into C++. Then optimize later. This is the worst but most straightforward option. </li>
+				<li> Rewrite the Python code using CUDA or Eigen with BLAS and ATen. This is the most principled but most time consuming approach, and requires complex handling between CPU and GPU calculation. </li>
+				<li> Vectorize the operations in Python using NumPy and PyTorch, and then use the Python C API to call the path algorithms. NumPy uses BLAS and PyTorch uses ATen for their underlying implementations. </li>
+			</ol>
+
+			<br>
+			&emsp;
+			For methods (1) and (2), this would have involved very time-consuming rewrites, debugging, and learning foreign C/C++ libraries. Although method (3) has overhead passing data and structures between C++ and Python, on top of Python specific overhead (global interpreter lock, lack of multithreading, etc.), we wanted to leverage the already existing SIMD and vectorized speedups that both NumPy and PyTorch offer without adding too much complexity. We wrote a general framework, ComputeBackend, which abstracts away switching between NumPy arrays and PyTorch tensors, and can automatically select the best device. According to the timing analysis below, NumPy using CPU is almost always preferred for the space colonization algorithm, and is always preferred for the fast DBM algorithm due to its highly sequential nature.
+			
+			<br><br>
+			&emsp; 
+			We vectorized each of our path algorithms by replacing lists with ComputeBackend arrays, for loops with batch operations, and if statements with masks. This was much easier said than done, and we encountered numerous problems (such as translation error) during the vectorization stage. Additionally, integrating Python and C++ was certainly easier than rewriting vectorized algorithms in C++, but also added complexity when trying to build the project cross-platform, due to additional Python and Cython dependencies. We came up with a solution using Conda as our cross-platform package manager for Python, which we will include with our public release.
+
+			<br>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<figure>
+					<table style="width: 100%; text-align: center; border-collapse: collapse;">
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/hardware_sc_attractor.png" width="80%"/>
+								<figcaption>Varying Attractor Density</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/hardware_sc_length.png" width="80%"/>
+								<figcaption>Varying Length of Bolt</figcaption>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: center;">
+								<img src="./images/hardware_sc_bolts.png" width="80%"/>
+								<figcaption>Varying Number of Bolts</figcaption>
+							</td>
+						</tr>
+					</table>
+					<figcaption>Timing analysis of different methods varying different parameters, highlighting the strengths of each acceleration method. Increasing the attractor density highlights the efficiency of PyTorch's masking operations and sparse Tensor operations, even when running on CPU. Increasing the length of the bolt makes the algorithm more sequential in nature, demonstrating the effectiveness of NumPy's vectorization schemes. GPU simulation time does not increase, even with an extremely high number of lightning bolts. Experiments were run using a Ryzen 5 3600 equipped with a NVIDIA RTX 3060, running Ubuntu 20.04. </figcaption>
+				</figure>
+			</div>
+		
+
+			<h3>PyLightning</h3>
+			&emsp;
+			We created a PyLightning class as the primary communication interface between C++ and Python. PyLightning abstracts away the complex package management of the Python C API, the instantiation of the ComputeBackend, the passing of parameters from the GUI to a LightningParam data class, and the creation of the Lightning classes themselves. Both our methods implement an abstract class, which include methods to return the minimum necessary data to reconstruct the time, order, and structure of the lightning bolt in 3D space. The data returned consist of 3D points, pointers to parents, and the timestep of creation. PyLightning then processes the results immediately into a more digestible form for the GUI and shader pipeline, to maximize real-time output. Because our vectorized implementations are incredibly fast, we opt to simulate the entire path of the lightning before it reaches our C++ code.
+
+			<h3>Time-based Simulation</h3>
+			&emsp;
+			Both of our path algorithms are time-based, which lends some credence to a time-based simulation. Atmospheric lightning is characterized by 3 stages:
+			<ol>
+				<li> (Stepped Leader) Lightning leaders, with possible branching, travel through the atmosphere in search for a path to ground. </li>
+				<li> (Return Stroke) A conductive path from the ionization source to ground forms, causing a massive discharge in potential. This is the most luminous part of lightning. </li>
+				<li> (Afterimage) After all the electric potential is exhausted, the light as a result of the discharge and the ionization of the air surrounding the return stroke gradually fades. </li>
+			</ol>
+
+			<br>
+			&emsp;
+			We replicate this 3-stage effect using 5 user-specified time periods (start, return, discharge, fade out, end). PyLightning computes a backtrace to identify the points along the main path and their return stroke order, as well as the parent-child point pairs for rendering each segment of lightning. The lightning is structured as a connected sequence of points and cylinders according to the parent-child point pairs. During the return stroke, segments along the main path are rendered with brighter luminosity and greater width. During the afterimage phase, we gradually anneal the luminosity and width of both the return stroke and branches to 0.
+
+			<h3>Shaders</h3>
+			&emsp;
+			To create the illusion that the lightning is brighter, we implemented a post-processing bloom shader. This consists of a high pass filter, multi-stage Gaussian blur, and final composite shader which combines the rendered and processed scene, and tonemaps the result. In order to save one post-processing step, we integrate the high-pass filter in parallel with the initial render. We use a ping-pong buffer to split and implement the multi-stage Gaussian blur.
+			<br><br>
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td style="text-align: center;">
+						<img src="./images/1passblur.jpeg" width="80%"/>
+						<figcaption>One Blur Pass</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/3passblur.jpeg" width="80%"/>
+						<figcaption>Three Blur passes</figcaption>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<img src="./images/5passblur.jpeg" width="80%"/>
+						<figcaption>Five Blur Passes</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/7passblur.jpeg" width="80%"/>
+						<figcaption>Seven Blur Passes</figcaption>
+					</td>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<img src="./images/10passblur.jpeg" width="80%"/>
+						<figcaption>Ten Blur Passes</figcaption>
+					</td>
+				</tr>
+			</table>
+			
+			<br><br>
+			&emsp;
+			We encountered significant difficulty using GLSL to switch between the different framebuffers, and connect the output of one shader to the input of another. The main difficulty in adding the post processing step was switching between different framebuffers to render to in order to use as a texture to run gaussian blur over. The scene kept on getting cut off due to a bug with hardcoding the sizing of the framebuffers but we were able to resolve it by adding resizing to the callback function as well as pulling the screen size before initializing the postprocessing framebuffer.
+			
+			<h3>GUI Magic<h3></h3>
+			&emsp;
+			Our GUI supports changing the algorithm type, modifying all their parameters, adding multiple lightning bolts, changing their start and end points, time-based simulation events, luminosity, width, and even color. 
 
 		</p>
 		
-		<h2>Goals and Deliverables</h2>
+		<h2>Results</h2>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<img src="./images/color_change.gif" width="70%"/>
+			<figcaption>Varying Colors</figcaption>
+			
+			<br><br>
+
+			<img src="./images/gui.gif" width="70%"/>
+			<figcaption>Varying Parameters and Algorithms</figcaption>
+		</div>
+
+		<h2>References</h2>
 		<p>
-			&emsp;
-			Our baseline plan is to replicate the implementation and result of Physically Based Animation and Rendering of Lightning by T. Kim and M. Lin which presented a physically based algorithm for the simulation, animation, and rendering of sustained electric arcs. 
-			<br>
-			However, we hope to extend this work as follows:
+			[1] Kim T, Lin M.C. (2004). Physically based animation and rendering of lightning. <em>12th Pacific Conference on Computer Graphics and Applications</em>, Seoul, Korea (South), 2004. <a href="https://doi.org/10.1109/PCCGA.2004.1348357">10.1109/PCCGA.2004.1348357</a><br>
+			[2] Yun J, Son M, Choi B, Kim T, Yoon S.E. (2017). Physically inspired, interactive lightning generation. <em>Computer Animation and Virtual Worlds.</em> 28:e1760. <a href="https://doi.org/10.1002/cav.1760">10.1002/cav.1760</a><br>
+			[3] Lowke, J & Szili, E. (2022). Toward a theory of "stepped-leaders" of lightning. <em>Journal of Physics D: Applied Physics.</em> 56. <a href="https://doi.org/10.1088/1361-6463/aca103">10.1088/1361-6463/aca103</a><br> 
+			[4] Reis N & Fernandes A.R. (2022). Using a Space Colonization Algorithm for Lightning Simulation. <em>2022 International Conference on Graphics and Interaction (ICGI)</em>, Aveiro, Portugal, 2022. <a href="https://doi.org/10.1109/ICGI57174.2022.9990427">10.1109/ICGI57174.2022.9990427</a><br>
+		</p>
+
+		<h2>Contributions</h2>
+		<p>
 			<ul>
-				<li>
-					modeling physical effects specific to a Monte Carlo raytracer, which previous works do not originally use
-				</li>
-				<li>
-					temporal simulation (ignoring or approximating relativistic effects)
-				</li>
-				<li>
-					comparisons with more modern models for how lightning behaves, as the phenomenon is still poorly understood
-				</li>
+				<li>Jennifer: Shaders, post-processing, GUI updates for algorithm parameters and color</li>
+				<li>Sonia: Fast DBM with vectorization, integration with PyLightning.</li>
+				<li>Claire: Output to lightning structure pipeline, backtrace, and GUI updates for customizing the start and end points of a lightning.</li>
+				<li>James: Space colonization, hardware acceleration, ComputeBackend, PyLightning, GUI updates for and implementation of time-based simulation and multi-bolt rendering.</li>
 			</ul>
 		</p>
-		<h2>Schedule</h2>
-
-		<h3>Week 1(4/6 - 4/12)</h3>
-		<p>
-			&emsp;
-			Converge on and implement a physics model for how lightning behaves in any filled medium
-		</p>
-
-		<h3>Week 2(4/13 - 4/19)</h3>
-		<p>
-			&emsp;
-			Try to port our physics model in an indoor environment in Blender. Finish milestone video, milestone report webpage, and presentation
-		</p>
-
-		<h3>Week 3 (4/20 - 4/26)</h3>
-		<p>
-			&emsp;
-			Create scenes with conductive vs. non-conductive materials, multiple strikes or sink (-) charges, and other interesting effects
-		</p>
-
-		<h3>Week 4 (4/27 - 5/3)</h3>
-		<p>
-			&emsp;
-			Adding interactive features, such as spawning source (+) charges, changing initial charge, environments, simulation speed, etc. Finish final project video, final report webpage, and presentation
-		</p>
-
-		<h2>Resources</h2>
-
-		<a href=https://gamma.cs.unc.edu/LIGHTNING/lightning.pdf>(1)Physically Based Animation and Rendering of Lightning, 2004</a>
-		<a href=https://www.sciencedirect.com/science/article/pii/S037015731300375X>(2)The Physics of Lightning, 2014</a>
-		<a href=https://onlinelibrary.wiley.com/doi/full/10.1002/cav.1760>(3)Physically Inspired Interactive Lightning Generation, 2017</a>
 	</body>
 </html>
