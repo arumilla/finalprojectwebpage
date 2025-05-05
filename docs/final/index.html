@@ -34,7 +34,7 @@
 		<br>
 		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/final/index.html">https://arumilla.github.io/finalprojectwebpage/final/index.html</a>
 		<br>
-		Link to slides: <a href="https://github.com/jding25/lightningsimulation/tree/sc">https://github.com/jding25/lightningsimulation/tree/sc</a>
+		Link to slides: <a href="https://docs.google.com/presentation/d/1gL_wzgH7XWUCPYR4sjSmSwFLCap9_iQ1t1BobJdenh8">https://docs.google.com/presentation/d/1gL_wzgH7XWUCPYR4sjSmSwFLCap9_iQ1t1BobJdenh8</a>
 		<br>
 		Link to video: <a href="https://youtu.be/g6NiUkLZbIg">https://youtu.be/g6NiUkLZbIg</a>
 
@@ -68,12 +68,12 @@
 			&emsp; 
 			The fast DBM approach builds off a 2017 paper [2]. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
 
-			\[ V_{approx, \{P, N, B}\} = \sum_{i=1}^{n}(\frac{1}{r_{i}})^{\rho} \]
+			\[ V_{approx, \{ P, N, B \}} = \sum_{i=1}^{n}(\frac{1}{r_{i}})^{\rho} \]
 
 			<br><br>
 			<div style="display: flex; flex-direction: column; align-items: center;">
 				<img src="./images/dbm_graph.png" width="50%"/>
-				<figcaption>&emsp; This 2D graphic that shows the negative path (grey), positive ground (black), and boundary cells (blue) (https://onlinelibrary.wiley.com/doi/10.1002/cav.1760)</figcaption>
+				<figcaption><br> This 2D graphic that shows the negative path (grey), positive ground (black), and boundary cells (blue) [2]. <br></figcaption>
 			</div>
 			<br><br>	
 
@@ -118,7 +118,7 @@
 					</tr>
 					</table>
 				</figure>
-				<figcaption>Increasing the depth increases the overall resolution, which allows for more complex branching structure.</figcaption>
+				<figcaption><br> Increasing the depth increases the overall resolution, which allows for more complex branching structure. <br></figcaption>
 			</div>
 
 			<h4>Variations on \(\eta\) and \(\rho\)</h4>
@@ -147,10 +147,10 @@
 					</tr>
 					</table>
 				</figure>
-				<figcaption>Increasing \(\rho\) and \(\eta\) makes it less likely to take branches.</figcaption>
+				<figcaption><br> Increasing \(\rho\) and \(\eta\) makes it less likely to take branches. <br></figcaption>
 			</div>
 
-			<br>	
+			<br><br>
 			&emsp;
 			Once we calculate all the potentials for each boundary cell, these potentials become a probability distribution from which we will select the next candidate to join the lightning path. The idea behind the approximation of the potential is to incentivize the selection of cells that are close to ground, hence moving the lighting in a general downwards direction, while also penalizing cells that are close to the lightning path and other boundary cells, which encourages branching. Once the next candidate cell is one that reaches the ground of the grid, the algorithm stops and the path is complete. In the equations, there are two tunable parameters that can be used to affect the lightning path. Increasing \(\rho\) and \(\eta\) generally cause less branches to be taken.
 	
@@ -160,7 +160,7 @@
 			
 			<h3>Space Colonization</h3>
 			&emsp;
-			The DBM model makes for a compelling and intuitive explanation for the path of lightning. However, the potential difference between a charged region in a cloud and the ground, and the electric field it generates, is far too small to cause lightning formation. The most recent model of lightning formation proposes that the lightning leader travels through the atmosphere in a 3 step process:
+			The DBM model makes for a compelling and intuitive explanation for the path of lightning. However, the potential difference between a charged region in a cloud and the ground, and the electric field it generates, is far too small to cause lightning formation. The most recent model of lightning formation proposes that the lightning leader travels through the atmosphere in a 3 step process [3]:
 			<ol>
 				<li> The ionization source causes coronal pulses and an accumulation of metastable oxygen molecules (an O2 molecule in an excited state). </li>
 				<li> When metastables reach a critical density, a conducting column in the direction of metastable formation appears. At this critical density, metastables are able to conduct through an equilibrium effect between negatively charged electrons and positively charged ions. </li>
@@ -169,7 +169,7 @@
 
 			<br>
 			&emsp;
-			The space colonization model is based on a 2022 paper on realistic lightning simulation, with several modifications and improvements to ground the algorithm based on the metastable model. Given start and end points, we randomly fill a cylindrical volume between the two points with attractors. The stepped leader of the lightning travels in a direction based on a weighted sum of nearby attractors, which models the distribution of metastable accumulation. In order to maintain the principle of minimum energy, attractors that are too close to the lightning leader are removed.
+			The space colonization model is based on a 2022 paper on realistic lightning simulation [4], with several modifications and improvements to ground the algorithm based on the metastable model. Given start and end points, we randomly fill a cylindrical volume between the two points with attractors. The stepped leader of the lightning travels in a direction based on a weighted sum of nearby attractors, which models the distribution of metastable accumulation. In order to maintain the principle of minimum energy, attractors that are too close to the lightning leader are removed.
 
 			<div style="display: flex; flex-direction: column; align-items: center;">
 				<figure>
@@ -185,11 +185,11 @@
 							</td>
 						</tr>
 					</table>
-					<figcaption>This is a visualization of the full volume of attractor points, branches, and resulting lightning path generation. Once the initial cylinder of attractors is generated, the algorithm deterministcally finds the main path.</figcaption>
+					<figcaption><br> This is a visualization of the full volume of attractor points, branches, and resulting lightning path generation. Once the initial cylinder of attractors is generated, the algorithm deterministcally finds the main path. <br></figcaption>
 				</figure>
 			</div>
 
-			<br>
+			<br><br>
 			&emsp;
 			The original paper has poor and non-physically accurate branching, so we modify branching to be recursive in nature. Because the end point of the stepped leader, and more fundamentally the algorithm, is deterministically set, we approximate the lower ionization potential and metastable accumulation rate of the branches by recursively updating a probability that a branch's leader steps. We add additional nondeterminism by randomly sampling endpoints of the branches in a 15 to 115 degree range based on the end point and the current distance to the end point.
 
@@ -198,7 +198,7 @@
 					<table style="width: 100%; text-align: center; border-collapse: collapse;">
 						<tr>
 							<td style="text-align: center;">
-								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<img src="./images/sc_ablation_base.png" width="100%"/>
 								<figcaption>base</figcaption>
 							</td>
 							<td style="text-align: center;">
@@ -212,7 +212,7 @@
 						</tr>
 						<tr>
 							<td style="text-align: center;">
-								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<img src="./images/sc_ablation_base.png" width="100%"/>
 								<figcaption>base</figcaption>
 							</td>
 							<td style="text-align: center;">
@@ -226,7 +226,7 @@
 						</tr>
 						<tr>
 							<td style="text-align: center;">
-								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<img src="./images/sc_ablation_base.png" width="100%"/>
 								<figcaption>base</figcaption>
 							</td>
 							<td style="text-align: center;">
@@ -240,7 +240,7 @@
 						</tr>
 						<tr>
 							<td style="text-align: center;">
-								<img src="./images/sc_ablation_base.png" width="90%"/>
+								<img src="./images/sc_ablation_base.png" width="100%"/>
 								<figcaption>base</figcaption>
 							</td>
 							<td style="text-align: center;">
@@ -253,7 +253,7 @@
 							</td>
 						</tr>
 					</table>
-					<figcaption>Ablation study on various space colonization parameters. Increasing the branch probability and step size creates more branching, but more unrealistic lightning. Increasing the step size results in shorter lightning bolts and less branchiness. Ideally, both the step size and influence/kill radii should be very small, and the attractor density should be very large. Having a larger kill radius compared to influence radius results in very straight lightning bolts and is physically inaccurate. Having a smaller kill radius compared to influence radius results in degenerate cases, which can be interpreted as cloud-to-cloud lightning.</figcaption>
+					<figcaption><br> Ablation study on various space colonization parameters. Increasing the branch probability and step size creates more branching, but more unrealistic lightning. Increasing the step size results in shorter lightning bolts and less branchiness. Ideally, both the step size and influence/kill radii should be very small, and the attractor density should be very large. Having a larger kill radius compared to influence radius results in very straight lightning bolts and is physically inaccurate. Having a smaller kill radius compared to influence radius results in degenerate cases, which can be interpreted as cloud-to-cloud lightning. <br></figcaption>
 				</figure>
 			</div>
 
