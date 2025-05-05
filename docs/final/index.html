@@ -1,5 +1,5 @@
 <html>
-	<title>Realistic Lightning Simulation</title>
+	<title>Lightning Simulation</title>
 	<head>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -28,58 +28,149 @@
 	</head>
 	<body>
 		<div class="container">
-		<h1>Realistic Lightning Simulation Project Proposal</h1>
+		<h1>Lightning Simulation</h1>
 		<div style="text-align: center;">Names: Jennifer Cao, Sonia Chacon, Claire Ding, James Ni</div>
 
 		<br>
 
-		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/">https://arumilla.github.io/finalprojectwebpage/</a>
+		Link to webpage: <a href="https://arumilla.github.io/finalprojectwebpage/final/index.html">https://arumilla.github.io/finalprojectwebpage/final/index.html</a>
 		
 		<br>
 
-		Link to GitHub repository: <a href="https://arumilla.github.io/finalprojectwebpage/">https://arumilla.github.io/finalprojectwebpage/</a>
+		Link to slides: <a href="https://github.com/jding25/lightningsimulation/tree/sc">https://github.com/jding25/lightningsimulation/tree/sc</a>
+
+		<br>
+		Link to video: <a href="https://github.com/jding25/lightningsimulation/tree/sc">https://github.com/jding25/lightningsimulation/tree/sc</a>
 
 		<div style="display: flex; flex-direction: column; align-items: center;">
 			<table style="width: 100%; text-align: center; border-collapse: collapse;">
 			  <tr>
 				<td style="text-align: center;">
-				  <img src="../proposal/images/lightning2004.png" width="25%"/>
-				  <figcaption>Simulated lightning from resource 1(2004)</figcaption>
+				  <img src="./images/dbm_video.gif" width="25%"/>
+				  <figcaption>Fast DBM</figcaption>
 				</td>
 				<td style="text-align: center;">
-				  <img src="../proposal/images/lightning2017.png" width="25%"/>
-				  <figcaption>Simulated lightning from resource 3(2017)</figcaption>
-				</td>
-				<td style="text-align: center;">
-					<img src="../proposal/images/lightningreal.jpg" width="25%"/>
-					<figcaption>Actual lightning</figcaption>
+				  <img src="./images/sc_video.gif" width="25%"/>
+				  <figcaption>Space Colonization</figcaption>
 				</td>
 			  </tr>
 			</table>
 		</div>
 
-		<!--
-		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
-
-		<h2>Summary</h2>
+		<h2>Abstract</h2>
 		&emsp; 
-		We want to implement a realistic simulation of lightning with as realistic of lighting as possible. Our main focus will be creating a physically accurate algorithm for determining the path of the lightning and some extensions could include how lightning interacts in different weather conditions or with different objects at or near the site of the strike. Because physics are the focus, some initial plans on the platform include using Blender to perform light simulation, ray tracing, and volumetric scattering in the environment.
-		
-		<h2>Problem Description</h2>
+		This project focuses on simulating realistic atmospheric lightning in real-time. Our initial goal was to implement a highly realistic physical model using the latest research on lightning, such as the dielectric breakdown model (DBM). 
+		<br><br>
+		&emsp; 
+		We diverged from our initial plans for two main reasons: (1) the DBM necessitates partial differential equation solvers, which are unable to run in real-time, and (2) the DBM is no longer the most up-to-date model for lightning formation. Thus, we changed our focus to come up with two fast approximations to existing physical models: (1) a fast DBM approximation, and (2) a space colonization model. Building off the framework in Homework 4, we added a fully-functional GUI for choosing the algorithm, visualizing the path, and changing the lightning parameters and appearance. Both algorithms can simulate and run in real time. In order to make the path realistic, we implemented a post-processing bloom shader to give the appearance of much stronger light.
+				
+		<h2>Technical Approach</h2>
 		<p>
-			&emsp; 
-			3D lightning effects are typically non-physically grounded, and focus on only creating a visually believable replica of lightning for special effects. Our main focus will be implementing the algorithm for the path the lightning takes using energy minimization principles from physics. To make the simulation of particles computationally efficient, we will use Monte-Carlo sampling at each step. 		</p>
+			<h3>Fast DBM</h3>
 			<br>
-			There are two main challenges:	
+			&emsp; 
+			The fast DBM approach builds off a 2017 paper [link paper here]. We distinguish between three types of cells in a grid space: positive (representing the ground), negative (representing the lightning), and boundary (representing any neighboring cells). In each iteration of the algorithm, we look at the boundary cells as the candidate cells for the next cell in the lightning path. For each boundary cell we calculate and sum its potential in each of the three cell types and then find the potential and probability distribution with the following equations:
+			<br><br>
+			\[ V_{approx, \{P, N, B}\} = \sum_{i=1}^{n}(\frac{1}{r_{i}})^{\rho} \]
+
+			<br><br>
+			(“cite” a diagram that the original paper uses to better explain)
+
+			<br><br>	
+			&emsp; 
+			This approximates the potential calculation for a boundary cell as the sum of the inverse distance \(r_{i}\) to all cells. The tunable parameter \(\rho\) biases the potential towards nearby cells over distant cells. Observe that there are three different sums, one for the potential between a boundary point and each of the positive, negative, and other boundary cells. The net potential for a single cell is
+
+			<br><br>
+			\[ \phi = \frac{P}{N*B} \]
+
+			<br><br>	
+			&emsp;
+			Using the potentials, we compute the probability of sampling that boundary cell as
+
+			<br><br>	
+			&emsp;
+			\[ P_{i} = \frac{(\phi_{i})^{\eta}}{\sum_{j=1}^{n}(\phi_{j})^{\eta}}, \]
+
+			<br><br>	
+			&emsp;
+			where \(\eta\) biases the probability to high-probability points. In general, a higher \(\rho\) or \(\eta\) decreases the degree of branching.
+
+			<br><br>
+
+			<h4>Variations on Depth</h4>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="./images/db_n1_p1_d32.jpeg" width="25%"/>
+					  <figcaption>Depth = 32</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d64.jpeg" width="25%"/>
+						<figcaption>Depth = 64</figcaption>
+					  </td>
+				  </tr>
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="./images/db_n1_p1_d96.jpeg" width="25%"/>
+					  <figcaption>Depth = 96</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d128.jpeg" width="25%"/>
+						<figcaption>Depth = 128</figcaption>
+					  </td>
+				  </tr>
+				</table>
+			</div>
+
+			<h4>Variations on &#951</h4>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="./images/db_n1_p1_d32.jpeg" width="25%"/>
+					  <figcaption>Depth = 32</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d64.jpeg" width="25%"/>
+						<figcaption>Depth = 64</figcaption>
+					  </td>
+				  </tr>
+				  <tr>
+					<td style="text-align: center;">
+					  <img src="./images/db_n1_p1_d96.jpeg" width="25%"/>
+					  <figcaption>Depth = 96</figcaption>
+					</td>
+					<td style="text-align: center;">
+						<img src="./images/db_n1_p1_d128.jpeg" width="25%"/>
+						<figcaption>Depth = 128</figcaption>
+					  </td>
+				  </tr>
+				</table>
+			</div>
+
+			<br><br>	
+			&emsp;
+			Once we calculate all the potentials for each boundary cell, these potentials become a probability distribution from which we will select the next candidate to join the lightning path. The idea behind the approximation of the potential is to incentivize the selection of cells that are close to ground, hence moving the lighting in a general downwards direction, while also penalizing cells that are close to the lightning path and other boundary cells, which encourages branching. Once the next candidate cell is one that reaches the ground of the grid, the algorithm stops and the path is complete. In the equations, there are two tunable parameters that can be used to affect the lightning path. Increasing \(\rho\) and \(\phi\) generally cause less branches to be taken.
+	
+			<br><br>	
+			&emsp;
+			In addition to implementing the fast DBM algorithm proposed by the previous paper, we also made some changes in order to speed up execution. One option that we explored was to prune boundary cells after some parameterized number of boundary cells in the list. This way we could omit potential calculations for boundary cells that are furthest from the current end of the path, which are not very likely to be selected anyway. This did provide some improvement, but this was mostly made irrelevant by the time we implemented our second optimization, being the vectorization of calculations. In the second iteration of this algorithm, we kept the calculations the same, but designed it such that it utilized vectorized functions, such as in numpy. This provided a major improvement in calculation speed, allowing us to calculate the path quickly, and scale for higher resolutions.
+			
+			<br><br>	
+			&emsp;
+			The DBM model makes for a compelling and intuitive explanation for the path of lightning. However, the potential difference between a charged region in a cloud and the ground, and the electric field it generates, is far too small to cause lightning formation. The most recent model of lightning formation proposes that the lightning leader travels through the atmosphere in a 3 step process:
 			<ol>
-				<li>
-					implementing a modern, realistic model for generating the successive fractal paths which characterize lightning
-				</li>
-				<li>
-					modeling the luminance of the ionized particles based on thermodynamics
-				</li>
+				<li> The ionization source causes coronal pulses and an accumulation of metastable oxygen molecules (an O2 molecule in an excited state). </li>
+				<li> When metastables reach a critical density, a conducting column in the direction of metastable formation appears. At this critical density, metastables are able to conduct through an equilibrium effect between negatively charged electrons and positively charged ions. </li>
+				<li> Electrons move along the column to produce a near-zero electric field, allowing charges to reach the stepped leader from the ionization source. The process then repeats. </li>
 			</ol>
+
+
+			<h3>Space Colonization</h3>
+
+
+		</p>
 		
 		<h2>Goals and Deliverables</h2>
 		<p>
